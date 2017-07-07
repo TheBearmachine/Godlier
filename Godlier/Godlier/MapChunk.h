@@ -23,7 +23,7 @@ public:
 	MapChunk();
 	virtual ~MapChunk();
 
-	void setup(const int* tiles, const  int* heights);
+	void setup();
 
 private:
 	sf::Vector2i findTextureCoords(int tileNr);

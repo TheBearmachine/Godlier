@@ -7,20 +7,14 @@
 static const char* BACKGROUND_TILESET_TEXTURE = "Resources/Images/Tilesets/BackgroundTileset.png";
 static const char* OBJECT_TILESET_TEXTURE = "Resources/Images/Tilesets/ObjectTileset.png";
 
-
-
 MapChunk::MapChunk()
 {
 	m_backgroundTilesetTexture = &ResourceManager::getInstance().getTexture(BACKGROUND_TILESET_TEXTURE);
 	m_objectTilesetTexture = &ResourceManager::getInstance().getTexture(OBJECT_TILESET_TEXTURE);
 
-	int tileType[ChunkNrTilesX * ChunkNrTilesY];
-	int heightMap[ChunkNrTilesX * ChunkNrTilesY];
 
 	sf::Vector2f pos = getPosition();
-	MapGenerator::generateMap(tileType, heightMap, ChunkNrTilesX, ChunkNrTilesY, 0.1f, pos);
 
-	setup(tileType, heightMap);
 }
 
 MapChunk::~MapChunk()
@@ -28,18 +22,24 @@ MapChunk::~MapChunk()
 
 }
 
-void MapChunk::setup(const int* tiles, const int* heights)
+void MapChunk::setup()
 {
+	sf::Vector2f pos = getPosition();
+
+	int tileType[ChunkNrTilesX * ChunkNrTilesY];
+	int heightMap[ChunkNrTilesX * ChunkNrTilesY];
+
+	MapGenerator::generateMap(tileType, heightMap, ChunkNrTilesX, ChunkNrTilesY, 0.04f, pos);
+
 	m_tileVertexArray.setPrimitiveType(sf::Quads);
 	m_tileVertexArray.resize(VertArrSize);
-
 
 	for (unsigned int i = 0; i < ChunkNrTilesX; i++)
 	{
 		for (unsigned int j = 0; j < ChunkNrTilesY; j++)
 		{
 			int index = i + j * ChunkNrTilesX;
-			int tilenr = tiles[index];
+			int tilenr = tileType[index];
 
 			sf::Vector2i uvcoords = findTextureCoords(tilenr);
 			//std::printf("index: %u tile nr: %i, u: %u, v: %u\n", index, tilenr, uvcoords.x, uvcoords.y);
@@ -51,7 +51,7 @@ void MapChunk::setup(const int* tiles, const int* heights)
 			m_tiles[index].setTextureID(tilenr);
 			m_tiles[index].setVertexArrayFirstIndex(index * 4);
 			m_tiles[index].setPosition((float)(i * TileWidth), (float)(j * TileHeight));
-			m_tiles[index].setHeight(heights[index]);
+			m_tiles[index].setHeight(heightMap[index]);
 
 			quad[0].texCoords = sf::Vector2f((float)(uvcoords.x * TileWidth), (float)(uvcoords.y * TileHeight));
 			quad[1].texCoords = sf::Vector2f((float)((uvcoords.x + 1) * TileWidth), (float)(uvcoords.y * TileHeight));
@@ -59,19 +59,17 @@ void MapChunk::setup(const int* tiles, const int* heights)
 			quad[3].texCoords = sf::Vector2f((float)(uvcoords.x * TileWidth), (float)((uvcoords.y + 1) * TileHeight));
 		}
 	}
-	//std::printf("Tile width: %u", TileWidth);
-	//std::printf("Tile height: %u", TileHeight);
-	size_t limit = m_tileVertexArray.getVertexCount();
+	/*size_t limit = m_tileVertexArray.getVertexCount();
 	for (size_t i = 0; i < limit; i++)
 	{
 		int xPos = int(m_tileVertexArray[i].position.x);
 		int yPos = int(m_tileVertexArray[i].position.y);
 		std::printf("[x: %i, y: %i]    ", xPos, yPos);
-	}
+	}*/
 }
 
 // Helper function for finding the uv coordinates in the texture
-sf::Vector2i  MapChunk::findTextureCoords(int tileNr)
+sf::Vector2i MapChunk::findTextureCoords(int tileNr)
 {
 	sf::Vector2i vec;
 	int x = tileNr % (m_backgroundTilesetTexture->getSize().x / TileWidth);

@@ -5,11 +5,23 @@
 Map::Map(CameraController* cameraController) :
 	m_cameraController(cameraController)
 {
-
+	sf::Vector2f pos;
+	for (int i = 0; i < CHUNKS_X; i++)
+	{
+		for (int j = 0; j < CHUNKS_Y; j++)
+		{
+			pos.x = i * ChunkNrTilesX * TileWidth;
+			pos.y = j * ChunkNrTilesY * TileHeight;
+			int index = (i + j * CHUNKS_X);
+			m_mapChunk[index].setPosition(pos);
+			m_mapChunk[index].setup();
+		}
+	}
 }
 
 Map::~Map()
 {
+
 }
 
 void Map::setupController(Controller * controller)
@@ -19,7 +31,8 @@ void Map::setupController(Controller * controller)
 
 void Map::drawWorld(sf::RenderWindow* window)
 {
-	window->draw(m_mapChunk);
+	for (int i = 0; i < NR_CHUNKS; i++)
+		window->draw(m_mapChunk[i]);
 }
 
 void Map::onButtonPress(Controller::Buttons button)

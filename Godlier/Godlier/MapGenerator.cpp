@@ -83,35 +83,34 @@ void MapGenerator::generateMap(int* tileArr, int* heightArr, int width, int heig
 	for (int i = 0; i < width; i++)
 	{
 
-		float nx = (float)(i + position.x) * frequency;
+		float nx = ((float)i + position.x) * frequency;
 		for (int j = 0; j < height; j++)
 		{
 			unsigned int index = i + j * width;
-			static float multiplier = 3.0f;
-			float ny = (float)j * frequency + position.y;
+			static float multiplier = 2.0f;
+			float ny = ((float)j + position.y) * frequency;
 
-			float heightMap =
+			float heightVal =
 				RidgedMultifractal(nx, ny, octaves, lacunarity, gain, H, sharpness, threshold) * multiplier;
 
-			heightArr[index] = (int)heightMap;
+			heightArr[index] = (int)heightVal;
 
-			float temp = noise(nx, ny);
-			//heightMap = 3.0f;
+			float noiseVal = noise(nx, ny);
 
 			// If the height is larger than this, it is to be considered stone
-			if (heightMap >= 5.0f)
+			if (heightVal >= 3.5f)
 			{
 				tileArr[index] = TileType::Stone;
 			}
 			// If less than this it is to be considered water
-			else if (heightMap < 0.5)
+			else if (heightVal < 0.5)
 			{
 				tileArr[index] = TileType::Water;
 			}
 			// Else use the value from the noise to gererate a random biome
 			else
 			{
-				if (temp >= 0.5f)
+				if (noiseVal >= 0.5f)
 					tileArr[index] = TileType::Grass;
 				else
 					tileArr[index] = TileType::Sand;

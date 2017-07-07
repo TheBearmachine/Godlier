@@ -19,8 +19,12 @@ public:
 
 
 private:
+	static const int CHUNKS_X = 4;
+	static const int CHUNKS_Y = 4;
+	static const int NR_CHUNKS = 16;
+
 	CameraController* m_cameraController;
-	MapChunk m_mapChunk;
+	MapChunk m_mapChunk[NR_CHUNKS];
 
 	// Inherited via IControllerListener
 	virtual void onButtonPress(Controller::Buttons button) override;
