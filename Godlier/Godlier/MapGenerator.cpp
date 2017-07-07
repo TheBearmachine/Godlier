@@ -1,5 +1,6 @@
 #include "MapGenerator.h"
 #include "simplexnoise.h"
+#include "Constants.h"
 #include <cmath>
 #include <vector>
 #include <SFML/System/Vector2.hpp>
@@ -70,7 +71,7 @@ float turbulence(float x, float y, int octaves, float lacunarity, float gain)
 	return sum / 2.0f;
 }
 
-void MapGenerator::generateMap(int* tileArr, int* heightArr, int width, int height, float frequency, sf::Vector2f &position)
+void MapGenerator::generateMap(int seed, int* tileArr, int* heightArr, int width, int height, float frequency, sf::Vector2f &position)
 {
 	static int octaves = 8;
 	static float lacunarity = 2.5f;
@@ -83,12 +84,12 @@ void MapGenerator::generateMap(int* tileArr, int* heightArr, int width, int heig
 	for (int i = 0; i < width; i++)
 	{
 
-		float nx = ((float)i + position.x) * frequency;
+		float nx = ((float)i * Constants::World::Tile::Width + position.x + seed) * frequency;
 		for (int j = 0; j < height; j++)
 		{
 			unsigned int index = i + j * width;
-			static float multiplier = 2.0f;
-			float ny = ((float)j + position.y) * frequency;
+			static float multiplier = 8.0f;
+			float ny = ((float)j * Constants::World::Tile::Height + position.y) * frequency;
 
 			float heightVal =
 				RidgedMultifractal(nx, ny, octaves, lacunarity, gain, H, sharpness, threshold) * multiplier;

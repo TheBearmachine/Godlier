@@ -22,14 +22,14 @@ MapChunk::~MapChunk()
 
 }
 
-void MapChunk::setup()
+void MapChunk::setup(float frequency, int seed)
 {
 	sf::Vector2f pos = getPosition();
 
 	int tileType[ChunkNrTilesX * ChunkNrTilesY];
 	int heightMap[ChunkNrTilesX * ChunkNrTilesY];
 
-	MapGenerator::generateMap(tileType, heightMap, ChunkNrTilesX, ChunkNrTilesY, 0.04f, pos);
+	MapGenerator::generateMap(seed, tileType, heightMap, ChunkNrTilesX, ChunkNrTilesY, frequency, pos);
 
 	m_tileVertexArray.setPrimitiveType(sf::Quads);
 	m_tileVertexArray.resize(VertArrSize);

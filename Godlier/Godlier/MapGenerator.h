@@ -12,8 +12,8 @@ public:
 		Sand,
 		Stone
 	};
+	static void generateMap(int seed, int* tileArr, int* heightArr, int width, int height, float frequency, sf::Vector2f &position);
 
-	static void generateMap(int* tileArr, int* heightArr, int width, int height, float frequency, sf::Vector2f &position);
 private:
 
 };

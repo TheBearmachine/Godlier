@@ -6,6 +6,7 @@ Map::Map(CameraController* cameraController) :
 	m_cameraController(cameraController)
 {
 	sf::Vector2f pos;
+	int seed = std::rand();
 	for (int i = 0; i < CHUNKS_X; i++)
 	{
 		for (int j = 0; j < CHUNKS_Y; j++)
@@ -14,7 +15,7 @@ Map::Map(CameraController* cameraController) :
 			pos.y = j * ChunkNrTilesY * TileHeight;
 			int index = (i + j * CHUNKS_X);
 			m_mapChunk[index].setPosition(pos);
-			m_mapChunk[index].setup();
+			m_mapChunk[index].setup(0.001f, seed);
 		}
 	}
 }
