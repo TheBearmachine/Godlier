@@ -2,7 +2,7 @@
 #include "MapChunk.h"
 
 Tile::Tile()
-	:m_height(0)
+	:m_height(0), m_hasChanges(false)
 {
 
 }
@@ -30,12 +30,12 @@ void Tile::setVertexArrayFirstIndex(int firstVertexIndex)
 	m_vertexArrayFirstIndex = firstVertexIndex;
 }
 
-int Tile::getVertexArrayIndices() const
+unsigned int Tile::getVertexArrayIndices() const
 {
 	return m_vertexArrayFirstIndex;
 }
 
-void Tile::setHeight(int newHeight)
+void Tile::setHeight(unsigned int newHeight)
 {
 	int oldHeight = m_height;
 	m_height = newHeight;
@@ -47,17 +47,18 @@ void Tile::setHeight(int newHeight)
 	m_mapChunk->updateTileHeight(m_vertexArrayFirstIndex, m_chunkIndex, newHeight);
 }
 
-int Tile::getHeight() const
+unsigned int Tile::getHeight() const
 {
 	return m_height;
 }
 
-void Tile::setTextureID(int ID)
+void Tile::setTextureID(unsigned int ID)
 {
 	m_textureID = ID;
+	//TODO: reflect changes in map object by updating the vertex array
 }
 
-int Tile::getTextureID() const
+unsigned int Tile::getTextureID() const
 {
 	return m_textureID;
 }
@@ -65,4 +66,9 @@ int Tile::getTextureID() const
 int Tile::getChunkIndex() const
 {
 	return m_chunkIndex;
+}
+
+void Tile::setHasChanges()
+{
+	m_hasChanges = true;
 }

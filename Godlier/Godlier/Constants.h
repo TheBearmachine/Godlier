@@ -1,4 +1,6 @@
 #pragma once
+#include <string>
+
 #define const_float const float
 #define const_int const int
 #define const_uint const unsigned int
@@ -15,8 +17,8 @@ namespace Constants
 			const_uint Height = 32;
 			const_uint HalfHeight = Height / 2;
 			const_uint CliffHeight = 8;
-			const_int MaxCliffHeight = 20;
-			const_int MinCliffHeight = 0;
+			const_uint MaxCliffHeight = 20;
+			const_uint MinCliffHeight = 0;
 		}
 		namespace Chunk
 		{
@@ -42,9 +44,9 @@ namespace Constants
 
 	namespace Filepaths
 	{
-		namespace Graphics
-		{
-			//const_charptr TileMapsFolder = "Resources/Images/Tilesets/";
-		}
+		const std::string TileMapsFolder = "Resources/Images/Tilesets/";
+		const std::string MapsFolder = "Resources/Maps/";
+		const std::string FontsFolder = "Resources/Fonts/";
+		const std::string DefaultFont = "Resources/Fonts/sui_generis_rg.ttf";
 	}
 }

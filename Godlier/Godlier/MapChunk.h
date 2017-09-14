@@ -23,7 +23,9 @@ public:
 	MapChunk();
 	virtual ~MapChunk();
 
-	void setup(float frequency, int seed);
+	void setupNew(float frequency, int seed);
+	void setupFromData(const char* file);
+	void writeToFile();
 
 private:
 	sf::Vector2i findTextureCoords(int tileNr);
@@ -34,6 +36,7 @@ public:
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 	void updateTileHeight(int firstVertexIndex, int chunkIndex, int height);
+	void updateTileID(int ID);
 
 private:
 	Tile m_tiles[ChunkNrTilesX * ChunkNrTilesY];

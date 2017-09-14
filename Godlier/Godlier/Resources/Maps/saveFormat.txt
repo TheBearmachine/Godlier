@@ -1,0 +1,25 @@
+[height]	[tileindex]	[object]
+5 bit		4  bit		7
+
+Chunk 0		 Chunk 1		etc...	Chunk 15
+0000000000000000 0000000000000000		0000000000000000
+|___||__||_____| |___||__||_____|		|___||__||_____|
+ hei tile   obj   hei tile  obj	 		 hei tile  obj
+
+filename will be:
+positionX-positionY.txt
+0-0.txt
+
+
+
+
+before:
+h = 2, t = 3		00010 - h	0011 - t
+
+after:
+00010000 00000000 - h = 4096
+00000001 10000000 - t = 384
+| =
+
+00010001 10000000 = 4480
+17	 128
