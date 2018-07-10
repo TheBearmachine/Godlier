@@ -2,18 +2,26 @@
 #include "ResourceManager.h"
 #include "EventManager.h"
 #include "Constants.h"
+#include "DrawingManager.h"
 #include <SFML/Graphics/RenderWindow.hpp>
 
-Button::Button() :
-	Clickable::Clickable(sf::FloatRect()),
-	m_text("Button",
-		   ResourceManager::getInstance().getFont(Constants::Filepaths::DefaultFont),
-		   26)
-{
-	m_interestedEvents.push_back(sf::Event::EventType::MouseMoved);
-	m_interestedEvents.push_back(sf::Event::EventType::MouseButtonPressed);
-	m_interestedEvents.push_back(sf::Event::EventType::MouseButtonReleased);
+static const std::string DEFAULT_TEXTURE = Constants::Filepaths::ImagesFolder + "Button.png";
 
+Button::Button() :
+	Button(nullptr, DEFAULT_TEXTURE, 0U)
+{
+
+}
+
+Button::Button(IButtonListener * listener, const std::string &textureName, size_t action) :
+	mText("Button", ResourceManager::getInstance().getFont(Constants::Filepaths::DefaultFont), 26),
+	mIsActive(true), mListener(listener), mClickAction(action)
+{
+	AnimationSetup animSetup = AnimationSetup::DefaultButtonSetup();
+	animSetup.textureName = textureName;
+	mSprite.setup(animSetup);
+	mSize = mSprite.getSize();
+	mSprite.setParentTransform(this);
 }
 
 Button::~Button()
@@ -21,94 +29,107 @@ Button::~Button()
 
 }
 
-void Button::initalize(EventManager * eventManager, IButtonListener * listener, std::string textureName, unsigned int action)
+void Button::setSpriteTexture(const std::string &texName)
 {
-	m_eventManager = eventManager;
-	if (m_eventManager)
-		m_eventManager->registerObserver(this, m_interestedEvents);
-	m_listener = listener;
-	m_clickAction = action;
-
-	AnimationSetup animSetup = AnimationSetup::DefaultButtonSetup();
-	animSetup.textureName = textureName;
-	m_sprite.setup(animSetup);
-}
-
-void Button::finalize()
-{
-	if (m_eventManager)
-	{
-		m_eventManager->unregisterObserver(this, m_interestedEvents);
-		m_eventManager = nullptr;
-	}
-}
-
-void Button::setSpriteTexture(std::string texName)
-{
-	m_sprite.setTexture(ResourceManager::getInstance().getTexture(texName));
-	m_interactArea.left = getPosition().x;
-	m_interactArea.top = getPosition().y;
-	m_interactArea.width = (float)m_sprite.getTextureRect().width;
-	m_interactArea.height = (float)m_sprite.getTextureRect().height;
+	mSprite.setSpriteTexture(texName);
+	mSize = mSprite.getSize();
+	adjustTextPosition();
 }
 
 void Button::setTextString(const std::string &text)
 {
-	m_text.setString(text);
+	mText.setString(text);
+	adjustTextPosition();
+}
+
+void Button::setTextSize(size_t size)
+{
+	mText.setCharacterSize(size);
 	adjustTextPosition();
 }
 
 void Button::setTextFont(const std::string & font)
 {
-	m_text.setFont(ResourceManager::getInstance().getFont(font));
+	mText.setFont(ResourceManager::getInstance().getFont(font));
 	adjustTextPosition();
+}
+
+sf::Vector2f Button::getSize() const
+{
+	return mSprite.getSize();
+}
+
+void Button::setListener(IButtonListener * listener)
+{
+	mListener = listener;
+}
+
+void Button::setAction(size_t action)
+{
+	mClickAction = action;
 }
 
 void Button::onMouseOver(bool mouseOver)
 {
-	if (m_isActive)
+	if (mIsActive)
 	{
 		if (mouseOver)
-			m_sprite.setFrame(1);
+			mSprite.setFrame(1);
 		else
-			m_sprite.setFrame(0);
+			mSprite.setFrame(0);
 	}
 }
 
 void Button::onClickInside()
 {
-	m_sprite.setFrame(3);
+	if (mIsActive)
+		mSprite.setFrame(2);
 }
 
 void Button::onReleaseInside()
 {
-	if (m_listener)
-		m_listener->buttonAction(m_clickAction);
-	m_sprite.setFrame(0);
-
+	if (mIsActive)
+	{
+		if (mListener)
+			mListener->buttonAction(mClickAction);
+		if (mMouseInside)
+			mSprite.setFrame(1);
+		else
+			mSprite.setFrame(0);
+	}
 }
 
 void Button::setActive(bool active)
 {
-	m_isActive = active;
+	mIsActive = active;
+
+	if (active)
+	{
+		registerEvents();
+		mSprite.setFrame(0);
+	}
+	else
+	{
+		unregisterEvents();
+		mSprite.setFrame(3);
+	}
 }
 
-void Button::tick(const sf::Time & deltaTime)
+void Button::drawPrep(DrawingManager * drawingMan)
 {
-
+	drawingMan->addDrawable(this);
 }
 
 void Button::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
-	states.transform *= getTransform();
-	target.draw(m_sprite, states);
-	target.draw(m_text, states);
+	states.transform = getGlobalTransform();
+	target.draw(mSprite, states);
+	target.draw(mText, states);
 }
 
 void Button::adjustTextPosition()
 {
-	sf::Vector2f pos;
-	float x = (m_sprite.getLocalBounds().width - m_text.getLocalBounds().width) / 2.0f;
-	float y = (m_sprite.getLocalBounds().height - m_text.getLocalBounds().height) / 2.0f;
-	m_text.setPosition(pos);
+	float x = (mSprite.getSize().x - mText.getLocalBounds().width) / 2.0f;
+	float y = (mSprite.getSize().y - mText.getLocalBounds().height) / 2.0f;
+	mText.setPosition(x, y);
 }

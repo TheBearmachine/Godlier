@@ -1,6 +1,6 @@
 #include "CameraController.h"
 #include "Constants.h"
-#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
 
 CameraController::CameraController()
 	:m_zoomLevel(1.0f), m_desiredZoomLevel(m_zoomLevel), m_controllable(true)
@@ -11,7 +11,7 @@ CameraController::~CameraController()
 {
 }
 
-void CameraController::initalize(sf::FloatRect size, sf::RenderWindow* window)
+void CameraController::initalize(sf::FloatRect size, sf::RenderTarget* window)
 {
 	m_cameraView.reset(size);
 	m_renderWindow = window;

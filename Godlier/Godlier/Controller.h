@@ -7,6 +7,8 @@ namespace sf
 	class Time;
 }
 class EventManager;
+class SystemCoordinator;
+
 __interface IControllerListener;
 
 class Controller : public EventObserver
@@ -21,7 +23,7 @@ public:
 		Up
 	};
 
-	Controller(EventManager* eventManager);
+	Controller(SystemCoordinator* systemCoordinator);
 	~Controller();
 	void setupDefaultControls();
 	bool setupControlsFromFile(char* file);
@@ -29,7 +31,9 @@ public:
 	void registerNewListener(IControllerListener* newListener);
 
 	void tick(sf::Time &deltaTime);
-	virtual void observe(const sf::Event & _event) override;
+	bool observe(const sf::Event & _event) override;
+	void registerEvents() override;
+	void unregisterEvents() override;
 
 private:
 	IControllerListener* m_currentControllerListener;

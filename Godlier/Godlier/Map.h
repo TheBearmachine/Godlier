@@ -1,21 +1,24 @@
 #pragma once
 #include "MapChunk.h"
+#include "DrawThis.h"
 #include "Controller.h"
 
 namespace sf
 {
-	class RenderWindow;
+	class RenderTarget;
 }
 class CameraController;
 
-class Map : public IControllerListener
+class Map : public IControllerListener, public DrawThis
 {
 public:
 	Map(CameraController* cameraController, unsigned int seed = 0);
 	~Map();
 
 	void setupController(Controller* controller);
-	void drawWorld(sf::RenderWindow* window);
+
+	void drawPrep(DrawingManager* drawingMan) override;
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 	void readFile(sf::Vector2f &pos);
 	unsigned int getSeed() const;

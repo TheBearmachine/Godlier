@@ -1,9 +1,11 @@
 #pragma once
 #include "Clickable.h"
-#include "Entity.h"
 #include "Animation.h"
+#include "Transformabetter.h"
+#include "DrawThis.h"
 #include <string>
 #include <vector>
+#include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/Text.hpp>
 
@@ -12,19 +14,22 @@ __interface IButtonListener
 	void buttonAction(unsigned int action);
 };
 
-class EventManager;
-
-class Button : public Clickable, public Entity
+class Button : public Clickable, public DrawThis
 {
 public:
 	Button();
-	~Button();
+	Button(IButtonListener *listener, const std::string &textureName, size_t action);
+	virtual ~Button();
 
-	void initalize(EventManager* eventManager, IButtonListener* listener, std::string textureName, unsigned int action);
-	void finalize();
-	void setSpriteTexture(std::string texName);
+	void setSpriteTexture(const std::string &texName);
 	void setTextString(const std::string &text);
+	void setTextSize(size_t size);
 	void setTextFont(const std::string &font);
+
+	sf::Vector2f getSize() const;
+
+	void setListener(IButtonListener* listener);
+	void setAction(size_t action);
 
 	virtual void onMouseOver(bool mouseOver) override;
 	virtual void onClickInside() override;
@@ -32,18 +37,16 @@ public:
 
 	virtual void setActive(bool active);
 
-	virtual void tick(const sf::Time & deltaTime) override;
+	virtual void drawPrep(DrawingManager* drawingMan);
 	virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
 private:
 	void adjustTextPosition();
 
-	std::vector<sf::Event::EventType> m_interestedEvents;
-	unsigned int m_clickAction;
-	EventManager* m_eventManager;
-	IButtonListener* m_listener;
-	Animation m_sprite;
-	sf::Text m_text;
+	size_t mClickAction;
+	IButtonListener* mListener;
+	Animation mSprite;
+	sf::Text mText;
 
-	bool m_isActive;
+	bool mIsActive;
 };

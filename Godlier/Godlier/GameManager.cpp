@@ -4,7 +4,7 @@
 static const char* TITLE = "Godlier";
 
 GameManager::GameManager() :
-	m_clock(), m_window(), m_eventManager()
+	m_clock(), m_window(), m_eventManager(), m_systemCoordinator(&m_window, &m_eventManager)
 {
 
 	m_eventManager.registerObserver(this, sf::Event::EventType::KeyPressed);
@@ -25,7 +25,7 @@ void GameManager::run()
 	gameLoop();
 }
 
-void GameManager::observe(const sf::Event & _event)
+bool GameManager::observe(const sf::Event & _event)
 {
 	switch (_event.type)
 	{
@@ -41,6 +41,7 @@ void GameManager::observe(const sf::Event & _event)
 	default:
 		break;
 	}
+	return false;
 }
 
 bool GameManager::initalizeGame()
@@ -81,7 +82,7 @@ void GameManager::gameLoop()
 {
 	m_clock.restart();
 
-	GameStatePlaying gameStatePlaying(&m_window, &m_eventManager);
+	GameStatePlaying gameStatePlaying(&m_systemCoordinator);
 	gameStatePlaying.setup();
 	m_currentGameState = &gameStatePlaying;
 
@@ -89,9 +90,23 @@ void GameManager::gameLoop()
 	while (m_window.isOpen())
 	{
 
-		m_currentGameState->handleEvents();
+		handleEvents();
 		m_currentGameState->update(m_clock);
-		m_currentGameState->render();
+
+		m_window.clear();
+		m_currentGameState->drawPrep();
+		m_drawingManager.draw(&m_window);
+		// TODO: Add another layer of drawing for post screen effects
+		m_window.display();
+	}
+}
+
+void GameManager::handleEvents()
+{
+	sf::Event currEvent;
+	while (m_window.pollEvent(currEvent))
+	{
+		m_eventManager.notify(currEvent, &m_window);
 	}
 }
 

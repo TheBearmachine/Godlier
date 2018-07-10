@@ -1,5 +1,6 @@
 #include "Animation.h"
 #include "ResourceManager.h"
+#include "DrawingManager.h"
 #include <SFML/System/Time.hpp>
 
 Animation::Animation() :
@@ -12,14 +13,14 @@ Animation::Animation() :
 
 Animation::~Animation()
 {
-	if (!m_spriteRects)
+	if (m_spriteRects)
 		delete[m_frames] m_spriteRects;
 }
 
 void Animation::setup(std::string textureName, unsigned int framesX, unsigned int framesY, unsigned short nrFrames, float timerPerFrame)
 {
-	setTexture(ResourceManager::getInstance().getTexture(textureName));
-	if (!m_spriteRects)
+	mSprite.setTexture(ResourceManager::getInstance().getTexture(textureName));
+	if (m_spriteRects)
 		delete[m_frames] m_spriteRects;
 	m_frames = nrFrames;
 	m_currentFrame = 0;
@@ -27,18 +28,18 @@ void Animation::setup(std::string textureName, unsigned int framesX, unsigned in
 	m_framesX = framesX;
 	m_framesY = framesY;
 
-	int width = getTexture()->getSize().x / m_framesX;
-	int height = getTexture()->getSize().y / m_framesY;
+	int width = mSprite.getTexture()->getSize().x / m_framesX;
+	int height = mSprite.getTexture()->getSize().y / m_framesY;
 
 	for (int i = 0; i < m_frames; i++)
 	{
-		m_spriteRects[i].left = i % m_framesX;
-		m_spriteRects[i].top = i / m_framesX;
+		m_spriteRects[i].left = i % m_framesX * width;
+		m_spriteRects[i].top = i / m_framesX * height;
 		m_spriteRects[i].width = width;
 		m_spriteRects[i].height = height;
 	}
 	m_remainingTime = m_timePerFrame = timerPerFrame;
-	setTextureRect(m_spriteRects[0]);
+	mSprite.setTextureRect(m_spriteRects[0]);
 }
 
 void Animation::setup(AnimationSetup animSetup)
@@ -50,7 +51,12 @@ void Animation::setFrame(unsigned short frame)
 {
 	m_currentFrame = frame;
 	m_remainingTime = m_timePerFrame;
-	setTextureRect(m_spriteRects[m_currentFrame]);
+	mSprite.setTextureRect(m_spriteRects[m_currentFrame]);
+}
+
+sf::Vector2f Animation::getSize() const
+{
+	return sf::Vector2f((float)mSprite.getTextureRect().width, (float)mSprite.getTextureRect().height);
 }
 
 void Animation::tickAnimation(sf::Time & deltaTime)
@@ -60,6 +66,27 @@ void Animation::tickAnimation(sf::Time & deltaTime)
 	{
 		m_remainingTime += m_timePerFrame;
 		m_currentFrame = (m_currentFrame + 1) % m_frames;
-		setTextureRect(m_spriteRects[m_currentFrame]);
+		mSprite.setTextureRect(m_spriteRects[m_currentFrame]);
 	}
+}
+
+void Animation::setSpriteTexture(const std::string & texName)
+{
+	mSprite.setTexture(ResourceManager::getInstance().getTexture(texName));
+}
+
+sf::Sprite * Animation::getSprite()
+{
+	return &mSprite;
+}
+
+void Animation::drawPrep(DrawingManager * drawingMan)
+{
+	drawingMan->addDrawable(this);
+}
+
+void Animation::draw(sf::RenderTarget & target, sf::RenderStates states) const
+{
+	states.transform = getGlobalTransform();
+	target.draw(mSprite, states);
 }

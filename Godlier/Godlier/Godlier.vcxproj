@@ -129,6 +129,10 @@
     <ClInclude Include="Clickable.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="Controller.h" />
+    <ClInclude Include="Dragable.h" />
+    <ClInclude Include="DrawingManager.h" />
+    <ClInclude Include="DrawThis.h" />
+    <ClInclude Include="EnhancedText.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="EventManager.h" />
     <ClInclude Include="EventObserver.h" />
@@ -136,14 +140,17 @@
     <ClInclude Include="GameState.h" />
     <ClInclude Include="GameStatePlaying.h" />
     <ClInclude Include="GUI.h" />
-    <ClInclude Include="IsometricProjection.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="MapChunk.h" />
     <ClInclude Include="MapGenerator.h" />
     <ClInclude Include="MapLoader.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="SimplexNoise.h" />
+    <ClInclude Include="SystemCoordinator.h" />
     <ClInclude Include="Tile.h" />
+    <ClInclude Include="Transformabetter.h" />
+    <ClInclude Include="VectorFunctions.h" />
+    <ClInclude Include="VectorRotation.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
@@ -151,8 +158,12 @@
     <ClCompile Include="CameraController.cpp" />
     <ClCompile Include="Clickable.cpp" />
     <ClCompile Include="Controller.cpp" />
+    <ClCompile Include="Dragable.cpp" />
+    <ClCompile Include="DrawingManager.cpp" />
+    <ClCompile Include="EnhancedText.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="EventManager.cpp" />
+    <ClCompile Include="EventObserver.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameStatePlaying.cpp" />
     <ClCompile Include="GUI.cpp" />
@@ -163,7 +174,9 @@
     <ClCompile Include="MapLoader.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="SimplexNoise.cpp" />
+    <ClCompile Include="SystemCoordinator.cpp" />
     <ClCompile Include="Tile.cpp" />
+    <ClCompile Include="Transformabetter.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

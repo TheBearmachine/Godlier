@@ -5,21 +5,23 @@
 #include "MapChunk.h"
 #include "Map.h"
 #include "CameraController.h"
+#include "SystemCoordinator.h"
 #include <SFML/Graphics/RenderWindow.hpp>
 
 #include "CameraController.h"
 #include "Controller.h"
 
-GameStatePlaying::GameStatePlaying(sf::RenderWindow* window, EventManager* eventManager) :
-	m_window(window), m_eventManager(eventManager), controller(eventManager)
+GameStatePlaying::GameStatePlaying(SystemCoordinator* systemCoordinator) :
+	m_systemCoordinator(systemCoordinator), controller(systemCoordinator)
 {
-	m_eventManager->registerObserver(this, sf::Event::EventType::KeyPressed);
+	m_window = systemCoordinator->getRenderTarget();
+	m_eventManager = systemCoordinator->getEventManager();
 
 }
 
 GameStatePlaying::~GameStatePlaying()
 {
-	m_eventManager->unregisterObserver(this, sf::Event::EventType::KeyPressed);
+	unregisterEvents();
 }
 
 void GameStatePlaying::setup()
@@ -44,24 +46,24 @@ void GameStatePlaying::update(sf::Clock& clock)
 	}
 }
 
-void GameStatePlaying::render()
+void GameStatePlaying::drawPrep()
 {
-	m_window->clear();
 	//mEntityManager->renderElements(*mWindow);
 	map->drawWorld(m_window);
-	m_window->display();
 }
 
-void GameStatePlaying::observe(const sf::Event & _event)
+bool GameStatePlaying::observe(const sf::Event & _event)
 {
+	return false;
 
 }
 
-void GameStatePlaying::handleEvents()
+void GameStatePlaying::registerEvents()
 {
-	sf::Event currEvent;
-	while (m_window->pollEvent(currEvent))
-	{
-		m_eventManager->notify(currEvent);
-	}
+	m_eventManager->registerObserver(this, sf::Event::EventType::KeyPressed);
+}
+
+void GameStatePlaying::unregisterEvents()
+{
+	m_eventManager->unregisterObserver(this, sf::Event::EventType::KeyPressed);
 }

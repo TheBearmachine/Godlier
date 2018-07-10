@@ -45,6 +45,7 @@ namespace Constants
 	namespace Filepaths
 	{
 		const std::string TileMapsFolder = "Resources/Images/Tilesets/";
+		const std::string ImagesFolder = "Resources/Images/";
 		const std::string MapsFolder = "Resources/Maps/";
 		const std::string FontsFolder = "Resources/Fonts/";
 		const std::string DefaultFont = "Resources/Fonts/sui_generis_rg.ttf";

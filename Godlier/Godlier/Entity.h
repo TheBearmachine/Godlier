@@ -1,14 +1,13 @@
 #pragma once
-
-#include <SFML/Graphics/Drawable.hpp>
-#include <SFML/Graphics/Transformable.hpp>
+#include "Transformabetter.h"
+#include "DrawThis.h"
 
 namespace sf
 {
 	class Time;
 }
 
-class Entity : public sf::Drawable, public sf::Transformable
+class Entity : public DrawThis, public Transformabetter
 {
 public:
 	Entity();

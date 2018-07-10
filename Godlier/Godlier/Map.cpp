@@ -2,6 +2,7 @@
 #include "CameraController.h"
 #include <fstream>
 #include "Constants.h"
+#include "DrawingManager.h"
 #include <SFML/Graphics/RenderWindow.hpp>
 
 Map::Map(CameraController* cameraController, unsigned int seed) :
@@ -25,10 +26,21 @@ void Map::setupController(Controller * controller)
 	controller->registerNewListener(this);
 }
 
-void Map::drawWorld(sf::RenderWindow* window)
+//void Map::drawWorld(sf::RenderWindow* window)
+//{
+//	for (int i = 0; i < NR_CHUNKS; i++)
+//		window->draw(m_mapChunk[i]);
+//}
+
+void Map::drawPrep(DrawingManager * drawingMan)
+{
+	drawingMan->addDrawable(this);
+}
+
+void Map::draw(sf::RenderTarget & target, sf::RenderStates states) const
 {
 	for (int i = 0; i < NR_CHUNKS; i++)
-		window->draw(m_mapChunk[i]);
+		target.draw(m_mapChunk[i]);
 }
 
 int charArrayToInt(char* arr)

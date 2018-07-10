@@ -1,12 +1,11 @@
 #include "Controller.h"
 #include "EventManager.h"
+#include "SystemCoordinator.h"
 #include <SFML/System/Time.hpp>
 
-Controller::Controller(EventManager* eventManager) :
-	m_eventManager(eventManager)
+Controller::Controller(SystemCoordinator* systemCoordinator)
 {
-	m_eventManager->registerObserver(this, sf::Event::EventType::KeyPressed);
-
+	m_eventManager = systemCoordinator->getEventManager();
 	setupDefaultControls();
 }
 
@@ -14,7 +13,7 @@ Controller::~Controller()
 {
 	m_eventManager->unregisterObserver(this, sf::Event::EventType::KeyPressed);
 }
-
+// TODO: Change to read from file
 void Controller::setupDefaultControls()
 {
 	m_menuKey = sf::Keyboard::Escape;
@@ -49,7 +48,7 @@ void Controller::tick(sf::Time &deltaTime)
 		m_currentControllerListener->onButtonHold(Buttons::Up, val);
 }
 
-void Controller::observe(const sf::Event & _event)
+bool Controller::observe(const sf::Event & _event)
 {
 
 	if (_event.type == sf::Event::EventType::KeyPressed)
@@ -59,4 +58,15 @@ void Controller::observe(const sf::Event & _event)
 
 		}
 	}
+	return false;
+}
+
+void Controller::registerEvents()
+{
+	m_eventManager->registerObserver(this, sf::Event::EventType::KeyPressed);
+}
+
+void Controller::unregisterEvents()
+{
+	m_eventManager->unregisterObserver(this, sf::Event::EventType::KeyPressed);
 }

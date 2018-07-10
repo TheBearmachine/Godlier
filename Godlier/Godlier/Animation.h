@@ -1,6 +1,8 @@
 #pragma once
 #include <SFML/Graphics/Sprite.hpp>
 #include <string>
+#include "DrawThis.h"
+#include "Transformabetter.h"
 
 namespace sf
 {
@@ -28,8 +30,7 @@ public:
 	}
 };
 
-
-class Animation : public sf::Sprite
+class Animation : public DrawThis, public Transformabetter
 {
 public:
 	Animation();
@@ -39,9 +40,18 @@ public:
 	void setup(AnimationSetup animSetup);
 	void setFrame(unsigned short frame);
 
+	sf::Vector2f getSize() const;
+
 	void tickAnimation(sf::Time& deltaTime);
+	void setSpriteTexture(const std::string &texName);
+
+	sf::Sprite* getSprite();
+
+	virtual void drawPrep(DrawingManager* drawingMan);
+	virtual void draw(sf::RenderTarget & target, sf::RenderStates states) const override;
 
 private:
+	sf::Sprite mSprite;
 	unsigned short m_frames;
 	unsigned short m_currentFrame;
 	sf::IntRect* m_spriteRects;
